@@ -1,0 +1,22 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write        # push the image to GHCR
+  id-token: write        # build provenance attestation
+  attestations: write
+
+jobs:
+  ci:
+    # Platform-owned golden path: test → image → attest → bump envs/dev/orders in demo-gitops
+    uses: vehkiya/demo-gitops/.github/workflows/java-service.yml@main
+    with:
+      service: orders
+      image: ghcr.io/vehkiya/demo-orders-service
+    secrets:
+      gitops-token: ${{ secrets.GITOPS_TOKEN }}

@@ -1,0 +1,57 @@
+# The ONLY config file in this service. Every property has a default that works locally.
+# Per-environment overrides live in demo-gitops/envs/<env>/orders/application.yaml.
+spring:
+  application:
+    name: orders
+  threads:
+    virtual:
+      enabled: true
+  mvc:
+    problemdetails:
+      enabled: true
+
+server:
+  port: 8080                # local; the platform sets 8080 on Kubernetes
+
+management:
+  server:
+    port: 9080              # local; the platform sets 9000 on Kubernetes
+  endpoints:
+    web:
+      exposure:
+        include: health, info, configsources
+  endpoint:
+    health:
+      probes:
+        enabled: true       # on by default in Kubernetes; enabled locally so the same URLs work
+  info:
+    env:
+      enabled: true
+    java:
+      enabled: true
+    git:
+      mode: full
+
+info:
+  environment: ${demo.environment}
+
+demo:
+  environment: local        # set per env by demo-gitops/envs/<env>/application.yaml
+
+orders:
+  max-items-per-order: 10
+  catalog:
+    base-url: http://localhost:8090
+    timeout: 2s
+    max-retries: 2
+  express-shipping:
+    enabled: false
+  payment:
+    mode: simulated         # sandbox/live also need provider-url + api-key (secret)
+
+---
+# Active whenever Spring Boot detects Kubernetes, in every environment
+spring.config.activate.on-cloud-platform: kubernetes
+orders:
+  catalog:
+    base-url: http://catalog:8080

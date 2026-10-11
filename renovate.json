@@ -1,0 +1,13 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "Jib base image in pom.xml",
+      "managerFilePatterns": ["/^pom\\.xml$/"],
+      "matchStrings": ["<image>(?<depName>eclipse-temurin):(?<currentValue>[^@<]+)@(?<currentDigest>sha256:[a-f0-9]+)</image>"],
+      "datasourceTemplate": "docker"
+    }
+  ]
+}
