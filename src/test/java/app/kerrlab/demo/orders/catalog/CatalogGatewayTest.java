@@ -36,6 +36,7 @@ class CatalogGatewayTest {
         RestClient.Builder builder = CatalogClientConfig.restClientBuilder(catalog);
         server = MockRestServiceServer.bindTo(builder).build();
         OrdersProperties properties = new OrdersProperties(10, catalog, new OrdersProperties.ExpressShipping(false),
+                new OrdersProperties.Delivery(5, 1),
                 new OrdersProperties.Payment(OrdersProperties.Payment.Mode.SIMULATED, null, null));
         gateway = new CatalogGateway(CatalogClientConfig.client(builder.build()), properties);
     }

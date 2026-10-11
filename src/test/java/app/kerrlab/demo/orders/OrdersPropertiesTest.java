@@ -34,7 +34,14 @@ class OrdersPropertiesTest {
             assertThat(properties.catalog().baseUrl()).isEqualTo(URI.create("http://localhost:8090"));
             assertThat(properties.catalog().timeout()).isEqualTo(Duration.ofSeconds(2));
             assertThat(properties.payment().mode()).isEqualTo(OrdersProperties.Payment.Mode.SIMULATED);
+            assertThat(properties.delivery()).isEqualTo(new OrdersProperties.Delivery(5, 1));
         });
+    }
+
+    @Test
+    void unrealisticDeliveryEstimateFailsStartup() {
+        runner.withPropertyValues("orders.delivery.standard-days=0")
+            .run(context -> assertThat(context).hasFailed());
     }
 
     @Test

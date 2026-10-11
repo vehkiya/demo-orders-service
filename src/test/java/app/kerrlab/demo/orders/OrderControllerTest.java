@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.hamcrest.Matchers.matchesPattern;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -46,6 +47,7 @@ class OrderControllerTest {
             .andExpect(jsonPath("$.id").isNotEmpty())
             .andExpect(jsonPath("$.total").value(69.38))
             .andExpect(jsonPath("$.currency").value("EUR"))
+            .andExpect(jsonPath("$.estimatedDelivery").value(matchesPattern("\\d{4}-\\d{2}-\\d{2}")))
             .andExpect(jsonPath("$.payment.mode").value("simulated"));
     }
 

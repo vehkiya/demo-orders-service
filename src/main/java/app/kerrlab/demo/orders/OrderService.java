@@ -1,7 +1,9 @@
 package app.kerrlab.demo.orders;
 
 import java.math.BigDecimal;
+import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -27,13 +29,17 @@ public class OrderService {
 
     private final SimulatedPaymentGateway payments;
 
+    private final Clock clock;
+
     /** In memory and per pod: good enough for the demo. */
     private final Map<String, Order> orders = new ConcurrentHashMap<>();
 
-    public OrderService(OrdersProperties properties, CatalogGateway catalog, SimulatedPaymentGateway payments) {
+    public OrderService(OrdersProperties properties, CatalogGateway catalog, SimulatedPaymentGateway payments,
+            Clock clock) {
         this.properties = properties;
         this.catalog = catalog;
         this.payments = payments;
+        this.clock = clock;
     }
 
     public Order place(OrderRequest request) {
@@ -55,8 +61,8 @@ public class OrderService {
         String currency = products.getFirst().currency();
         PaymentResult payment = payments.charge(total, currency);
         String id = "ord-" + UUID.randomUUID().toString().substring(0, 8);
-        Order order = new Order(id, List.copyOf(lines), total, currency,
-                request.express(), payment, Instant.now());
+        Order order = new Order(id, List.copyOf(lines), total, currency, request.express(),
+                estimatedDelivery(request.express()), payment, Instant.now(clock));
         orders.put(order.id(), order);
         return order;
     }
@@ -67,6 +73,11 @@ public class OrderService {
 
     public Collection<Order> all() {
         return orders.values();
+    }
+
+    private LocalDate estimatedDelivery(boolean express) {
+        OrdersProperties.Delivery delivery = properties.delivery();
+        return LocalDate.now(clock).plusDays(express ? delivery.expressDays() : delivery.standardDays());
     }
 
     private static Order.Line line(CatalogProduct product, int quantity) {
