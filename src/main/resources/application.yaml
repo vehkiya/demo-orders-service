@@ -46,6 +46,9 @@ orders:
     max-retries: 2
   express-shipping:
     enabled: false
+  delivery:
+    standard-days: 5
+    express-days: 1
   payment:
     mode: simulated         # sandbox/live also need provider-url + api-key (secret)
 

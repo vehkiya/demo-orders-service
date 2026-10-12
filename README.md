@@ -58,6 +58,8 @@ Per-environment values live in the GitOps repo, never here:
 | `orders.catalog.timeout` | `2s` | 100ms–10s, connect + read |
 | `orders.catalog.max-retries` | `2` | 0–5, only I/O errors and 5xx |
 | `orders.express-shipping.enabled` | `false` | Feature flag |
+| `orders.delivery.standard-days` | `5` | 1–30, days until `estimatedDelivery` |
+| `orders.delivery.express-days` | `1` | 0–10, used when `express: true` |
 | `orders.payment.mode` | `simulated` | `simulated` \| `sandbox` \| `live` |
 | `orders.payment.provider-url` | – | Required unless `simulated` |
 | `orders.payment.api-key` | – | **Secret**, injected as `ORDERS_PAYMENT_APIKEY` by External Secrets. Required unless `simulated` |

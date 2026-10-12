@@ -27,6 +27,7 @@ public record OrdersProperties(
         @Min(1) @Max(100) int maxItemsPerOrder,
         @Valid @NotNull Catalog catalog,
         @Valid @NotNull ExpressShipping expressShipping,
+        @Valid @NotNull Delivery delivery,
         @Valid @NotNull Payment payment) {
 
     public record Catalog(
@@ -36,6 +37,10 @@ public record OrdersProperties(
     }
 
     public record ExpressShipping(boolean enabled) {
+    }
+
+    /** Calendar days from order date to the estimated delivery date. */
+    public record Delivery(@Min(1) @Max(30) int standardDays, @Min(0) @Max(10) int expressDays) {
     }
 
     public record Payment(@NotNull Mode mode, URI providerUrl, String apiKey) {
